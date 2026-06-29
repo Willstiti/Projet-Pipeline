@@ -1,0 +1,9 @@
+node_modules
+coverage
+reports
+dist
+.git
+.scannerwork
+.env
+npm-debug.log
+Dockerfile*

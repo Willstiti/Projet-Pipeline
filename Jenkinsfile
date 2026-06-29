@@ -11,7 +11,6 @@ pipeline {
 		DOCKERHUB_CREDENTIALS = '65c06f4e-b141-49d5-b7ce-0a113fcdbfd9'
 		DOCKERHUB_NAMESPACE = 'Willstiti'
 		SONARQUBE_ENV = 'sonarqube'
-		NODE_IMAGE = 'node:20-bookworm-slim'
 		IMAGE_TAG = "${env.BUILD_NUMBER}"
 		BACKEND_IMAGE = "${DOCKERHUB_NAMESPACE}/tasklist-backend:${IMAGE_TAG}"
 		FRONTEND_IMAGE = "${DOCKERHUB_NAMESPACE}/tasklist-frontend:${IMAGE_TAG}"
@@ -21,18 +20,10 @@ pipeline {
 		stage('1. Install dependencies (npm ci)') {
 			steps {
 				dir('cicd-tasklist-backend') {
-					sh '''docker run --rm \
-						-u "$(id -u):$(id -g)" \
-						-v "$PWD":/workspace \
-						-w /workspace \
-						"$NODE_IMAGE" sh -lc "npm ci"'''
+					sh 'npm ci'
 				}
 				dir('cicd-tasklist-frontend') {
-					sh '''docker run --rm \
-						-u "$(id -u):$(id -g)" \
-						-v "$PWD":/workspace \
-						-w /workspace \
-						"$NODE_IMAGE" sh -lc "npm ci"'''
+					sh 'npm ci'
 				}
 			}
 		}
@@ -40,11 +31,7 @@ pipeline {
 		stage('2. Generate Prisma client') {
 			steps {
 				dir('cicd-tasklist-backend') {
-					sh '''docker run --rm \
-						-u "$(id -u):$(id -g)" \
-						-v "$PWD":/workspace \
-						-w /workspace \
-						"$NODE_IMAGE" sh -lc "npm run prisma:generate"'''
+					sh 'npm run prisma:generate'
 				}
 			}
 		}
@@ -52,18 +39,10 @@ pipeline {
 		stage('3. Run unit tests') {
 			steps {
 				dir('cicd-tasklist-backend') {
-					sh '''docker run --rm \
-						-u "$(id -u):$(id -g)" \
-						-v "$PWD":/workspace \
-						-w /workspace \
-						"$NODE_IMAGE" sh -lc "npm run test"'''
+					sh 'npm run test'
 				}
 				dir('cicd-tasklist-frontend') {
-					sh '''docker run --rm \
-						-u "$(id -u):$(id -g)" \
-						-v "$PWD":/workspace \
-						-w /workspace \
-						"$NODE_IMAGE" sh -lc "npm run test"'''
+					sh 'npm run test'
 				}
 			}
 		}
@@ -77,11 +56,7 @@ pipeline {
 		stage('5. Run end-to-end tests') {
 			steps {
 				dir('cicd-tasklist-backend') {
-					sh '''docker run --rm \
-						-u "$(id -u):$(id -g)" \
-						-v "$PWD":/workspace \
-						-w /workspace \
-						"$NODE_IMAGE" sh -lc "npm run test:e2e"'''
+					sh 'npm run test:e2e'
 				}
 			}
 		}
